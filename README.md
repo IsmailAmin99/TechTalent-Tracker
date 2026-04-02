@@ -24,4 +24,13 @@ A tech-market intelligence pipeline designed to track hiring trends using automa
 ### 2. Implement the Scarper
 
 - goal: fill the data model with data
-- process: test the data class by scraping from a single company first
+- process: script that fetches data for a single company & turn it into JobListing obj
+  - Greenhouse offers API --> **requests** for web scraping (simple and inexpsensive comapred to Selenium)
+
+#### Finding the API URL
+
+- go to a comapany's job listing site, inspect it and find the general URL format through the Network tab (filter by Fetch and copy their URLs)
+  - find the slug: unqiue name the comapny uses
+  - can be found by going to their career page and looking at the last word of their URL
+- process:
+  - fetch function that will get us the raw data from the site

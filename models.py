@@ -13,13 +13,13 @@ class JobListing:
     company: str
     title: str
 
+    # filtering for trends --> allows filtering out non-tech roles
+    department: str
+
     # location data
     location_raw: str
     # for "separates remote locations into their own category; betetr for visualization"
     is_remote: bool = False
-
-    # filtering for trends --> allows filtering out non-tech roles
-    department: str
 
     # financial data: job postings sometimes don't show the min/max for salary --> Optional
     salary_min: Optional[int] = None
