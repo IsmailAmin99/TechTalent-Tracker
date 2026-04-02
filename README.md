@@ -18,7 +18,10 @@ A tech-market intelligence pipeline designed to track hiring trends using automa
 ### 1. Create a Data Model
 
 - goal: define what each "job" will look like in the system for naming consistency
-  - process: create a DataClass that will store all fields I'm looking for (name,  job title, location, etc.)
-    - location: be sure to include logic on handling remote locations for later modeling
+- process: create a DataClass that will store all fields I'm looking for (name,  job title, location, etc.)
+  - location: be sure to include logic on handling remote locations for later modeling
 
----
+### 2. Implement the Scarper
+
+- goal: fill the data model with data
+- process: test the data class by scraping from a single company first
