@@ -16,20 +16,22 @@ def fetch_anthropic_jobs():
 def parse_anthropic_jobs(raw_jobs):
     clean_list = []
     for item in raw_jobs:
-        # map data keys to JobListing fields; will trigger __post_init__ for remote logic
         # check to see if 'departments' exists & isn't empty
         # if dept exists grab the name, otherwise list as general
-        dept_list = item.get('departments', [])
-        dept_name = dept_list[0].get(
-            'name', 'General') if dept_list else 'General'
+        depts = item.get('departments', [])
 
+        if depts and len(depts) > 0:
+            dept_name = depts[0].get('name', 'General')
+        else:
+            dept_name = 'General'
+
+        # map data keys to JobListing fields; will trigger __post_init__ for remote logic
         job = JobListing(
             job_id=str(item['id']),
             company="Anthropic",
-            title=item['title'],
-            location_raw=item['location']['name'],
-            department=item.get('departments', {})[
-                0].get('name', 'AI Research')
+            title=item.get('title', 'Unknown Title'),
+            location_raw=item.get('location', {}).get('name', 'Remote'),
+            department=dept_name
         )
         clean_list.append(job)
     return clean_list
@@ -38,7 +40,7 @@ def parse_anthropic_jobs(raw_jobs):
 if __name__ == "__main__":
     print("--- Starting Test ---")
 
-    # test the fetch f unction
+    # test the fetch function
     try:
         raw_data = fetch_anthropic_jobs()
         print(f"Success: Found {len(raw_data)} raw jobs")
