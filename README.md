@@ -34,3 +34,7 @@ A tech-market intelligence pipeline designed to track hiring trends using automa
   - can be found by going to their career page and looking at the last word of their URL
 - process:
   - fetch function that will get us the raw data from the site
+  - parse function that will read the converted job data and store it 
+  - fetch function that will get us more details on each job (salary, description)
+    - we want the description for later modeling & comparison
+    - don't run this for all jobs, pick a target (~5) and run the miner

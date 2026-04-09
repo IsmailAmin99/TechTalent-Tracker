@@ -1,4 +1,5 @@
 import requests
+import time
 from models import JobListing
 
 
@@ -36,6 +37,33 @@ def parse_anthropic_jobs(raw_jobs):
         clean_list.append(job)
     return clean_list
 
+# fetch function to get job details
+
+
+def fetch_job_details(job_id):
+    """Grabs the individual job API to get salary and full content"""
+    # ?content=true to get the description from Greenhouse
+    url = f"https://boards-api.greenhouse.io/v1/boards/anthropic/jobs/{job_id}?content=true"
+
+    try:
+        r = requests.get(url)
+        # convert job text to a dictionary
+        item = r.json()
+
+        # access pay ranges list from the Network tab
+        pay_info = item.get('pay_ranges', [{}])[0]
+
+        # store info into a dictionary to handle sparse data (missing data)
+        # .get() the script will return None instead of crashing --> keeps automation robust
+        return {
+            "salary_min": pay_info.get('min'),
+            "salary_max": pay_info.get('max'),
+            "description": item.get('content')
+        }
+    except Exception as e:
+        print(f"Error minin details for {job_id}: {e}")
+        return {}
+
 
 if __name__ == "__main__":
     print("--- Starting Test ---")
@@ -56,6 +84,23 @@ if __name__ == "__main__":
             print(f"Title: {sample.title}")
             print(f"Location: {sample.location_raw}")
             print(f"Is Remote: {getattr(sample, 'is_remote', 'N/A')}")
+
+            # test the mining
+            print("\n--- Mining Detailed Data (First 3 Jobs) ---")
+            for i in range(3):
+                target_job = cleaned_jobs[i]
+                # bridge the general list & the mined data
+                details = fetch_job_details(target_job.job_id)
+
+                # update obj with data
+                target_job.salary_min = details.get('salary_min')
+                target_job.salary_max = details.get('salary_max')
+
+                print(f"Fetched: {target_job.title}")
+                print(
+                    f"Salary Range: {target_job.salary_min} - {target_job.salary_max}")
+
+                time.sleep(1)  # 1-sec pause between scrape
 
     except Exception as e:
         print(f"Test Failed: {e}")
